@@ -15,7 +15,7 @@ very own personal portfolio built with a rather simple stack.
 - Flask (maybe, either that or self-hosted)
 - Spotify WebAPI
 
-## Planz
+## Plans
 - Live realtime updated widgets (Spotify currnet listening to planned) connected to a backend/proxy either selfhosted or a Flask.
 - Interactive/fun background on the site (spacey)
 - Themes? Light and dark for sure
