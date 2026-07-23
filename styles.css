@@ -1,5 +1,30 @@
+:root {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --text-secondary-color: #9ca3af;
+    --accent-discord: #5865f2;
+    --accent-github: #64acb1;
+    --accent-spotify: #1ed760;
+    --accent-email: #c7d2fe;
+    --transition: 0.3s ease;
+
+}
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --text-secondary-color: #6b7280;
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    transition: background-color var(--transition), color var(--transition);
+    overflow-x: hidden;
+    min-height: 100vh;
 }
