@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,32 @@
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+    <nav>
+        <a href="#projects" class="nav-link">projects</a>
+        <a href="#blog" class="nav-link">blog</a>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle">
+                <span>more</span>
+                <div class="dropdown-arrow"></div>
+            </button>
+            <div class="dropdown-menu">
+                <a href="#shows" class="dropdown-item">shows</a>
+                <a href="#albums" class="dropdown-item">albums</a>
+            </div>
+        </div>
+    </nav>
     <canvas id="canvas" aria-hidden="true"> </canvas>
 
     <div class="container">
         <div class="content-wrapper">
             <h1 class="title">ayan</h1>
-            <p class="caption">a 16 year old full stack developer in the works, from Pakistan</p>
+            <p class="caption">a 17 year old full stack developer in the works, from Pakistan.</p>
         </div>
     </div>
-    
-
+    <script src="script.js"></script>
 </body>
-</html>     
+
+</html>
