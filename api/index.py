@@ -2,6 +2,12 @@ import os
 import requests
 from flask import Flask, jsonify
 
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+
+from api.database import get_session
+from api.models import Post
+
 app = Flask(__name__)
 
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
@@ -91,3 +97,47 @@ def current_song():
 @app.get("/api/health")
 def health():
     return jsonify({"status": "ok"})
+
+
+@app.get("/api/posts")
+def get_posts():
+    session = None
+
+    try:
+        session = get_session()
+
+        statement = (
+            select(Post)
+            .where(
+                Post.status == "published",
+                Post.published_at.is_not(None)
+            )
+            .order_by(Post.published_at.desc())
+        )
+
+        posts = session.scalars(statement).all()
+
+        return jsonify({
+            "count": len(posts),
+            "posts": [
+                {
+                    "slug": post.slug,
+                    "title": post.title,
+                    "excerpt": post.excerpt,
+                    "reading_minutes": post.reading_minutes,
+                    "published_at": post.published_at.date().isoformat()
+                }
+                for post in posts
+            ]
+        })
+
+    except (SQLAlchemyError, RuntimeError):
+        app.logger.exception("Failed to load blog posts")
+
+        return jsonify({
+            "error": "Unable to load posts"
+        }), 500
+
+    finally:
+        if session is not None:
+            session.close()

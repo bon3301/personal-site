@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-dev": "set \"UV_NO_CACHE=1\" && set \"UV_CONCURRENT_DOWNLOADS=1\" && vercel dev"
   },
   "repository": {
     "type": "git",

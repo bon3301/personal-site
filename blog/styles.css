@@ -33,6 +33,12 @@
       background-color: var(--bg-color);
   }
 
+  .post-message {
+      padding: 1.6rem 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+  }
+
   .post-row {
       padding: 1.6rem 0.75rem;
       border-bottom: 1px solid var(--border-color);
