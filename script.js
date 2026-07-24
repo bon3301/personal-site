@@ -1,10 +1,11 @@
-import { createIcons, Sun, Moon, Clock } from 'lucide';
+import { createIcons, Sun, Moon, Clock, CloudSun } from 'lucide';
 
 createIcons({
     icons: {
         Sun,
         Moon,
-        Clock
+        Clock,
+        CloudSun
     }
 });
 
@@ -63,6 +64,104 @@ function updateClock() {
 
 updateClock();
 setInterval(updateClock, 1000);
+
+class WeatherWidget {
+    constructor() {
+        this.weatherText = document.getElementById('weather-text');
+        this.tempCelsius = null;
+        this.useCelsius = true;
+        this.weatherCode = 0;
+
+        this.load();
+    }
+
+    async load() {
+        try {
+            const response = await fetch(
+                'https://api.open-meteo.com/v1/forecast?latitude=24.8607&longitude=67.0011&current=temperature_2m,weather_code&temperature_unit=celsius'
+            );
+
+            const data = await response.json();
+
+            if (!data.current) {
+                throw new Error('No current weather data');
+            }
+
+            this.tempCelsius = data.current.temperature_2m;
+            this.weatherCode = data.current.weather_code;
+            this.render();
+        } catch (error) {
+            console.error('Failed to load weather:', error);
+
+            this.tempCelsius = 19.4;
+            this.weatherCode = 0;
+            this.render();
+        }
+    }
+
+    getWeatherDescription(code) {
+        const weatherMap = {
+            0: 'clear sky',
+            1: 'mainly clear',
+            2: 'partly cloudy',
+            3: 'overcast',
+            45: 'foggy',
+            48: 'foggy',
+            51: 'drizzle',
+            53: 'drizzle',
+            55: 'drizzle',
+            61: 'rain',
+            63: 'rain',
+            65: 'rain',
+            71: 'snow',
+            73: 'snow',
+            75: 'snow',
+            77: 'snow',
+            80: 'rain showers',
+            81: 'rain showers',
+            82: 'rain showers',
+            85: 'snow showers',
+            86: 'snow showers',
+            95: 'thunderstorm',
+            96: 'thunderstorm with hail',
+            99: 'thunderstorm with hail'
+        };
+
+        return weatherMap[code] || 'unknown';
+    }
+
+    getEmoji(temp) {
+        if (temp < 22) return '❄️';
+        if (temp > 30) return '🔥';
+        return '';
+    }
+
+    toggleTemp() {
+        this.useCelsius = !this.useCelsius;
+        this.render();
+    }
+
+    render() {
+        const fahrenheit = (this.tempCelsius * 9) / 5 + 32;
+        const temp = this.useCelsius
+            ? Math.round(this.tempCelsius)
+            : Math.round(fahrenheit);
+
+        const unit = this.useCelsius ? '°C' : '°F';
+        const emoji = this.getEmoji(this.tempCelsius);
+        const description = this.getWeatherDescription(this.weatherCode);
+
+        this.weatherText.innerHTML = `It's currently ${emoji} <span class="temp-toggle">${temp}${unit}</span> <span class="weather-description">(${description})</span> in <a href="https://www.accuweather.com/en/pk/karachi/127657/weather-forecast/127657" target="_blank" rel="noopener noreferrer" class="weather-link">Karachi</a>.`;
+
+        const tempToggle = document.querySelector('.temp-toggle');
+
+        if (tempToggle) {
+            tempToggle.addEventListener('click', () => this.toggleTemp());
+        }
+    }
+ }
+
+new WeatherWidget();
 
 const dropdown = document.querySelector('.dropdown');
 const dropdownToggle = document.querySelector('.dropdown-toggle');
