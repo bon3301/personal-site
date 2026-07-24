@@ -1,12 +1,32 @@
-import { createIcons, Sun, Moon, Clock, CloudSun } from 'lucide';
+import { createIcons, Sun, Moon, Clock, CloudSun, Mail } from 'lucide';
+import { siDiscord, siGithub, siSpotify } from 'simple-icons';
 
 createIcons({
     icons: {
         Sun,
         Moon,
         Clock,
-        CloudSun
+        CloudSun,
+        Mail
     }
+});
+
+const brandIcons = {
+    discord: siDiscord,
+    github: siGithub,
+    spotify: siSpotify
+};
+
+document.querySelectorAll('[data-brand]').forEach((element) => {
+    const icon = brandIcons[element.dataset.brand];
+
+    if (!icon) return;
+
+    element.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="${icon.path}"></path>
+        </svg>
+    `;
 });
 
 const canvas = document.getElementById('canvas');
