@@ -1,3 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Personal notes and updates from bon3301">
+
+    <title>blog | bon3301</title>
+
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../shared/site.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <a class="site-mark" href="/" aria-label="Home">
+            <svg
+                class="rinnegan-icon"
+                viewBox="0 0 64 64"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                aria-hidden="true">
+
+                <circle cx="32" cy="32" r="29"></circle>
+                <circle cx="32" cy="32" r="20"></circle>
+                <circle cx="32" cy="32" r="11"></circle>
+
+                <circle
+                    cx="32"
+                    cy="32"
+                    r="3"
+                    fill="currentColor"
+                    stroke="none">
+                </circle>
+
+                <g fill="currentColor" stroke="none">
+                    <circle cx="32" cy="12" r="2"></circle>
+                    <circle cx="49.3" cy="42" r="2"></circle>
+                    <circle cx="14.7" cy="42" r="2"></circle>
+                </g>
+            </svg>
+        </a>
+
+        <a href="/#projects" class="nav-link">projects</a>
+        <a href="/blog/" class="nav-link" aria-current="page">blog</a>
+
+        <div class="dropdown">
+            <button
+                class="dropdown-toggle"
+                type="button"
+                aria-label="More pages"
+                aria-expanded="false"
+                aria-controls="more-menu">
+
+                <span class="dropdown-arrow"></span>
+            </button>
+
+            <div class="dropdown-menu" id="more-menu">
+                <a href="/#shows" class="dropdown-item">shows</a>
+                <a href="/#albums" class="dropdown-item">albums</a>
+            </div>
+        </div>
+    </nav>
+
+    <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-label="Toggle theme">
+
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></i>
+    </button>
+
+    <canvas id="canvas" aria-hidden="true"></canvas>
+
+    <main>
+        <section class="blog-intro">
+            <p class="eyebrow">personal notes</p>
+
+            <h1>Blog</h1>
+
+            <p class="intro-copy">
+                Thoughts, project updates and whatever else I feel like writing
+                about.
+            </p>
+        </section>
+
+        <section class="posts-section" aria-labelledby="posts-heading">
+            <div class="section-heading">
+                <h2 id="posts-heading">Latest posts</h2>
+                <span id="post-count">0 posts</span>
+            </div>
+
+            <div
+                class="post-list"
+                id="post-list"
+                aria-live="polite">
+
+                <p class="empty-message">
+                    No posts yet. Check back soon.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="../shared/site.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+
 </html>
