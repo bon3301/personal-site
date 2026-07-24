@@ -4,7 +4,6 @@
   "description": "very own personal portfolio built with a rather simple stack.",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
