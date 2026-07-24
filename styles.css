@@ -211,4 +211,31 @@ nav {
       background-color: rgba(255, 255, 255, 0.1);
   }
 
+  .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 0.5rem;
+      background-color: var(--bg-color);
+      border: 2px solid var(--text-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+      z-index: 100;
+  }
+
+  .theme-toggle:hover {
+      transform: rotate(180deg) scale(1.1);
+  }
+
+  .theme-toggle svg {
+      width: 1.75rem;
+      height: 1.75rem;
+      fill: var(--text-color);
+  }
+
   
