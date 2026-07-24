@@ -269,6 +269,68 @@ class WeatherWidget {
 
 new WeatherWidget();
 
+class SpotifyWidget {
+    constructor() {
+        this.apiUrl = '/api/current-song';
+        this.widget = document.getElementById('spotify-widget');
+        this.albumArt = document.querySelector('.spotify-album-art');
+        this.title = document.getElementById('spotify-title');
+        this.artist = document.getElementById('spotify-artist');
+        this.statusText = document.getElementById('spotify-status-text');
+        this.statusDot = document.querySelector('.spotify-status-dot');
+
+        this.load();
+        setInterval(() => this.load(), 30000);
+    }
+
+    async load() {
+        try {
+            const response = await fetch(this.apiUrl);
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch Spotify data');
+            }
+
+            const data = await response.json();
+            this.render(data);
+        } catch (error) {
+            console.error('Spotify widget error:', error);
+            this.renderError();
+        }
+    }
+
+    render(data) {
+        if (data.album_image) {
+            this.albumArt.innerHTML =
+                `<img src="${data.album_image}" alt="${data.album}">`;
+
+            this.albumArt.classList.remove('loading');
+        }
+
+        this.title.textContent = data.song;
+        this.artist.textContent = data.artist;
+        this.widget.href = data.spotify_url;
+
+        if (data.is_playing) {
+            this.statusText.textContent = 'Listening on Spotify';
+            this.statusDot.classList.remove('inactive');
+        } else {
+            this.statusText.textContent = 'Last played on Spotify';
+            this.statusDot.classList.add('inactive');
+        }
+    }
+
+    renderError() {
+        this.title.textContent = 'Unable to load';
+        this.artist.textContent = 'Check back later';
+        this.statusText.textContent = 'Offline';
+        this.statusDot.classList.add('inactive');
+        this.albumArt.classList.remove('loading');
+    }
+}
+
+new SpotifyWidget();
+
 const dropdown = document.querySelector('.dropdown');
 const dropdownToggle = document.querySelector('.dropdown-toggle');
 
