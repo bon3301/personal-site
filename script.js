@@ -17,13 +17,14 @@ canvas.height = window.innerHeight;
 
 const dots = [];
 const numberOfDots = 50;
+const dotSpeed = 0.25;
 
 for (let index = 0; index < numberOfDots; index++) {
     dots.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        velocityX: Math.random() * 0.25 - 0.125,
-        velocityY: Math.random() * 0.25 - 0.125,
+        velocityX: Math.random() * dotSpeed - dotSpeed / 2,
+        velocityY: Math.random() * dotSpeed - dotSpeed / 2,
         color: `rgb(
             ${Math.floor(Math.random() * 256)},
             ${Math.floor(Math.random() * 256)},
@@ -47,18 +48,23 @@ function getDistance(x1, y1, x2, y2) {
 function drawDots() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    const auraRadius = 120;
+
     for (let index = 0; index < numberOfDots; index++) {
         const dot = dots[index];
 
-        if (getDistance(dot.x, dot.y, mouseX, mouseY) < 10) {
-            continue;
+        dot.x += dot.velocityX;
+        dot.y += dot.velocityY;
+
+        const distanceToMouse = getDistance(dot.x, dot.y, mouseX, mouseY);
+
+        if (distanceToMouse < auraRadius) {
+            const angle = Math.atan2(dot.y - mouseY, dot.x - mouseX);
+            const push = (auraRadius - distanceToMouse) / auraRadius;
+
+            dot.x += Math.cos(angle) * push * 2;
+            dot.y += Math.sin(angle) * push * 2;
         }
-
-        context.beginPath();
-        context.arc(dot.x, dot.y, 3, 0, Math.PI * 2);
-        context.fillStyle = dot.color;
-        context.fill();
-
 
         if (dot.x < 0 || dot.x > canvas.width) {
             dot.velocityX *= -1;
@@ -67,6 +73,11 @@ function drawDots() {
         if (dot.y < 0 || dot.y > canvas.height) {
             dot.velocityY *= -1;
         }
+
+        context.beginPath();
+        context.arc(dot.x, dot.y, 3, 0, Math.PI * 2);
+        context.fillStyle = dot.color;
+        context.fill();
     }
 
     requestAnimationFrame(drawDots);
@@ -74,7 +85,7 @@ function drawDots() {
 
 drawDots();
 
-canvas.addEventListener('mousemove', (event) => {
+window.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
     mouseY = event.clientY;
 });
