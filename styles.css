@@ -128,7 +128,7 @@ nav {
     font-weight: 500;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    font-family: 'Courier New', monospace;
+    font-family: 'Fira Mono', monospace;
     transition: color var(--transition);
 }
 
@@ -160,7 +160,7 @@ nav {
       font-weight: 500;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      font-family: 'Courier New', monospace;
+      font-family: 'Fira Mono', monospace;
       cursor: pointer;
       background: none;
       border: none;
@@ -235,7 +235,20 @@ nav {
   .theme-toggle svg {
       width: 1.75rem;
       height: 1.75rem;
-      fill: var(--text-color);
+      fill: none;
+      stroke: var(--text-color);
+  }
+
+  .moon-icon {
+      display: none;
+  }
+
+  [data-theme="light"] .sun-icon {
+      display: none;
+  }
+
+  [data-theme="light"] .moon-icon {
+      display: block;
   }
 
   

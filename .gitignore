@@ -17,3 +17,6 @@ __pycache__/
 Thumbs.db
 
 thinking.md
+# Node
+node_modules/
+dist/

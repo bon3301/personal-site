@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bon.me</title>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"></svg>
-    </button>
     <nav>
 
         <a href="#projects" class="nav-link">projects</a>
@@ -29,6 +29,10 @@
             </div>
         </div>
     </nav>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></ii></i>i></i>"">
+    </button>
     <canvas id="canvas" aria-hidden="true"> </canvas>
 
     <div class="container">
@@ -37,7 +41,7 @@
             <p class="caption">a 17 year old full stack developer in the works</p>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script type="module" src="./script.js"></script>
 </body>
 
 </html>

@@ -1,8 +1,16 @@
+import { createIcons, Sun, Moon } from 'lucide';
+
+createIcons({
+    icons: {
+        Sun,
+        Moon
+    }
+});
+
 class ThemeManager {
     constructor() {
         this.theme = localStorage.getItem('theme') || 'dark';
         this.button = document.getElementById('themeToggle');
-        this.icon = document.getElementById('themeIcon');
 
         this.apply();
         this.button.addEventListener('click', () => this.toggle());
@@ -16,12 +24,6 @@ class ThemeManager {
 
     apply() {
         document.documentElement.setAttribute('data-theme', this.theme);
-
-        if (this.theme === 'light') {
-            this.icon.innerHTML = '';
-        } else {
-            this.icon.innerHTML = '';
-        }
     }
 }
 
