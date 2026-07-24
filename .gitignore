@@ -18,4 +18,3 @@ thinking.md
 node_modules/
 dist/
 .vercel
-.env*
