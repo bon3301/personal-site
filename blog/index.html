@@ -89,32 +89,28 @@
     <canvas id="canvas" aria-hidden="true"></canvas>
 
     <main>
-        <section class="blog-intro">
-            <p class="eyebrow">personal notes</p>
+        <header class="blog-header">
+            <h1>blog</h1>
 
-            <h1>Blog</h1>
-
-            <p class="intro-copy">
-                Thoughts, project updates and whatever else I feel like writing
-                about.
+            <p class="blog-caption">
+                Personal notes, project updates and whatever else I feel like
+                writing about.
             </p>
-        </section>
+        </header>
 
-        <section class="posts-section" aria-labelledby="posts-heading">
-            <div class="section-heading">
-                <h2 id="posts-heading">Latest posts</h2>
-                <span id="post-count">0 posts</span>
-            </div>
+        <section class="post-list" aria-label="Blog posts">
+            <a class="post-row" href="#">
+                <h2 class="post-title">
+                    Building my personal portfolio
+                </h2>
 
-            <div
-                class="post-list"
-                id="post-list"
-                aria-live="polite">
+                <div class="post-meta">
+                    <time datetime="2026-06-10">Jun 10, 2026</time>
+                    <span>8 min read</span>
+                </div>
 
-                <p class="empty-message">
-                    No posts yet. Check back soon.
-                </p>
-            </div>
+                <span class="post-arrow" aria-hidden="true">→</span>
+            </a>
         </section>
     </main>
 
