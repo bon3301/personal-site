@@ -19,17 +19,17 @@
         <a href="#blog" class="nav-link">blog</a>
 
         <div class="dropdown">
-            <button class="dropdown-toggle">
+            <button class="dropdown-toggle" type="button" aria-expanded="false" aria-controls="more-menu">
                 <span>more</span>
                 <div class="dropdown-arrow"></div>
             </button>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" id="more-menu">
                 <a href="#shows" class="dropdown-item">shows</a>
                 <a href="#albums" class="dropdown-item">albums</a>
             </div>
         </div>
     </nav>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
         <i data-lucide="sun" class="sun-icon"></i>
         <i data-lucide="moon" class="moon-icon"></i>
     </button>
@@ -40,33 +40,22 @@
             <h1 class="title">bon3301</h1>
             <p class="caption">a 17 year old full stack developer in the works</p>
             <div class="social-links" role="navigation" aria-label="Social media links">
-                <a href="https://discord.com/users/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="social-link"
-                   aria-label="Discord profile">
+                <a href="https://discord.com/users/" target="_blank" rel="noopener noreferrer" class="social-link"
+                    aria-label="Discord profile">
                     <span class="brand-icon" data-brand="discord"></span>
                 </a>
 
-                <a href="https://github.com/bon3301"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="social-link"
-                   aria-label="GitHub profile">
+                <a href="https://github.com/bon3301" target="_blank" rel="noopener noreferrer" class="social-link"
+                    aria-label="GitHub profile">
                     <span class="brand-icon" data-brand="github"></span>
                 </a>
 
-                <a href="https://open.spotify.com/user/"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="social-link"
-                   aria-label="Spotify profile">
+                <a href="https://open.spotify.com/user/" target="_blank" rel="noopener noreferrer" class="social-link"
+                    aria-label="Spotify profile">
                     <span class="brand-icon" data-brand="spotify"></span>
                 </a>
 
-                <a href="mailto:"
-                   class="social-link"
-                   aria-label="Email contact">
+                <a href="mailto:" class="social-link" aria-label="Email contact">
                     <i data-lucide="mail" class="mail-icon"></i>
                 </a>
             </div>
@@ -80,11 +69,7 @@
                     <span class="weather-text" id="weather-text">Loading weather...</span>
                 </div>
             </div>
-            <a id="spotify-widget"
-               href="#"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="spotify-now-playing">
+            <a id="spotify-widget" href="#" target="_blank" rel="noopener noreferrer" class="spotify-now-playing">
 
                 <div class="spotify-album-art loading">
                     <span class="brand-icon spotify-logo" data-brand="spotify"></span>
@@ -107,6 +92,8 @@
                 </div>
             </a>
         </div>
+    </div>
+
     <script type="module" src="./script.js"></script>
 </body>
 

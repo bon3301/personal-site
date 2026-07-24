@@ -336,11 +336,25 @@ const dropdownToggle = document.querySelector('.dropdown-toggle');
 
 dropdownToggle.addEventListener('click', (event) => {
     event.stopPropagation();
-    dropdown.classList.toggle('open');
+
+    const isOpen = dropdown.classList.toggle('open');
+    dropdownToggle.setAttribute('aria-expanded', isOpen.toString());
 });
 
 document.addEventListener('click', (event) => {
     if (!dropdown.contains(event.target)) {
         dropdown.classList.remove('open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (
+        event.key === 'Escape' &&
+        dropdown.classList.contains('open')
+    ) {
+        dropdown.classList.remove('open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+        dropdownToggle.focus();
     }
 });
