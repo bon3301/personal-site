@@ -253,6 +253,29 @@
                         </div>
                     </header>
 
+                    <div
+                        class="editor-url-preview"
+                        id="editor-url-preview"
+                        data-status="draft">
+
+                        <span class="url-status-dot" aria-hidden="true"></span>
+
+                        <div class="editor-url-value">
+                            <span id="editor-url-origin"></span>
+
+                            <input
+                                id="editor-slug"
+                                type="text"
+                                maxlength="160"
+                                pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                                autocomplete="off"
+                                spellcheck="false"
+                                aria-label="Public post URL">
+
+                            <span>/</span>
+                        </div>
+                    </div>
+
                     <label class="editor-field">
                         <span>title</span>
 

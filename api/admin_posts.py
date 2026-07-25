@@ -10,7 +10,7 @@ from flask import (
     request
 )
 from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from api.auth import admin_required, csrf_required
 from api.database import get_session
@@ -251,6 +251,7 @@ def update_admin_post(post_id):
 
     editable_fields = {
         "title",
+        "slug",
         "excerpt",
         "content_markdown"
     }
@@ -273,6 +274,33 @@ def update_admin_post(post_id):
                 "error": (
                     "Title must be between "
                     "1 and 200 characters"
+                )
+            }), 400
+
+    if "slug" in data:
+        if not isinstance(data["slug"], str):
+            return jsonify({
+                "error": "slug needs to be text"
+            }), 400
+
+        slug = data["slug"].strip()
+
+        if not slug or len(slug) > 160:
+            return jsonify({
+                "error": (
+                    "slug needs to be between "
+                    "1 and 160 characters"
+                )
+            }), 400
+
+        if not re.fullmatch(
+            r"[a-z0-9]+(?:-[a-z0-9]+)*",
+            slug
+        ):
+            return jsonify({
+                "error": (
+                    "url only allows lowercase letters, "
+                    "numbers and dashes"
                 )
             }), 400
 
@@ -319,8 +347,36 @@ def update_admin_post(post_id):
                 "error": "Post not found"
             }), 404
 
+        if "slug" in data:
+            if (
+                post.status == "published"
+                and slug != post.slug
+            ):
+                return jsonify({
+                    "error": (
+                        "unpublish before changing the url"
+                    )
+                }), 409
+
+            existing_post_id = database_session.scalar(
+                select(Post.id).where(
+                    Post.slug == slug,
+                    Post.id != post_id
+                )
+            )
+
+            if existing_post_id is not None:
+                return jsonify({
+                    "error": (
+                        "that url is already being used :/"
+                    )
+                }), 409
+
         if "title" in data:
             post.title = title
+
+        if "slug" in data:
+            post.slug = slug
 
         if "excerpt" in data:
             post.excerpt = excerpt
@@ -339,6 +395,14 @@ def update_admin_post(post_id):
         return jsonify({
             "post": serialize_full_post(post)
         })
+
+    except IntegrityError:
+        if database_session is not None:
+            database_session.rollback()
+
+        return jsonify({
+            "error": "that url is already being used :/"
+        }), 409
 
     except (SQLAlchemyError, RuntimeError):
         if database_session is not None:

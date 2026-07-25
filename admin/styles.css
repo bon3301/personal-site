@@ -328,6 +328,55 @@
     color: #f87171;
 }
 
+.editor-url-preview {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--menu-hover);
+}
+
+.url-status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #facc15;
+}
+
+.editor-url-preview[data-status="published"] .url-status-dot {
+    background-color: var(--accent-spotify);
+}
+
+.editor-url-value {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.78rem;
+    overflow: hidden;
+}
+
+.editor-url-value input {
+    min-width: 4rem;
+    flex: 1;
+    border: none;
+    background: none;
+    color: var(--text-color);
+    font: inherit;
+    outline: none;
+}
+
+.editor-url-value input:disabled {
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
 .admin-post-row {
     width: 100%;
     border: none;

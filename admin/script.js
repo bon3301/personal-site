@@ -32,6 +32,16 @@ const editorReadingTime = document.getElementById('editor-reading-time');
 const editorMessage = document.getElementById('editor-message');
 const markdownPreview = document.getElementById('markdown-preview');
 const publishButton = document.getElementById('publish-button');
+const editorUrlPreview = document.getElementById(
+    'editor-url-preview'
+);
+const editorUrlOrigin = document.getElementById(
+    'editor-url-origin'
+);
+const editorSlug = document.getElementById('editor-slug');
+
+editorUrlOrigin.textContent =
+    `${window.location.origin}/blog/`;
 
 let csrfToken = null;
 let activePostId = null;
@@ -249,6 +259,11 @@ function setEditorDisabled(disabled) {
     editorContent.disabled = disabled;
     savePostButton.disabled = disabled;
     publishButton.disabled = disabled;
+
+    editorSlug.disabled = (
+        disabled ||
+        activePostStatus === 'published'
+    );
 }
 
 function cancelAutoSave() {
@@ -287,6 +302,15 @@ async function saveCurrentPost(automatic = false) {
         return false;
     }
 
+    const slug = editorSlug.value.trim();
+
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        editorMessage.textContent =
+            'url only allows lowercase letters, numbers and dashes';
+
+        return false;
+    }
+
     if (saveInProgress) {
         saveQueued = true;
         return false;
@@ -318,6 +342,7 @@ async function saveCurrentPost(automatic = false) {
                 },
                 body: JSON.stringify({
                     title,
+                    slug,
                     excerpt: (
                         editorExcerpt.value.trim() ||
                         null
@@ -343,6 +368,7 @@ async function saveCurrentPost(automatic = false) {
 
         if (editorRevision === savingRevision) {
             editorTitle.value = post.title;
+            editorSlug.value = post.slug;
             editorExcerpt.value = post.excerpt || '';
             editorContent.value = post.content_markdown;
 
@@ -393,6 +419,11 @@ function updateEditorStatus(post) {
             ? 'unpublish'
             : 'publish'
     );
+
+    editorUrlPreview.dataset.status = post.status;
+
+    editorSlug.disabled =
+        post.status === 'published';
 }
 
 async function openPostEditor(postId) {
@@ -430,6 +461,7 @@ async function openPostEditor(postId) {
         const post = data.post;
 
         editorTitle.value = post.title;
+        editorSlug.value = post.slug;
         editorExcerpt.value = post.excerpt || '';
         editorContent.value = post.content_markdown;
         renderMarkdownPreview();
@@ -630,6 +662,10 @@ editorBackButton.addEventListener('click', () => {
 });
 
 editorTitle.addEventListener('input', () => {
+    markEditorDirty();
+});
+
+editorSlug.addEventListener('input', () => {
     markEditorDirty();
 });
 
