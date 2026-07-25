@@ -37,6 +37,10 @@ let csrfToken = null;
 let activePostId = null;
 let editorIsDirty = false;
 let activePostStatus = null;
+let editorRevision = 0;
+let autoSaveTimer = null;
+let saveInProgress = false;
+let saveQueued = false;
 
 function setMessage(element, message, state = '') {
     element.textContent = message;
@@ -60,6 +64,9 @@ function showLogin() {
     editorIsDirty = false;
     dashboardView.hidden = false;
     postEditor.hidden = true;
+
+    cancelAutoSave();
+    editorRevision = 0;
 }
 
 function showAdmin(token) {
@@ -74,6 +81,9 @@ function showAdmin(token) {
     editorIsDirty = false;
     dashboardView.hidden = false;
     postEditor.hidden = true;
+
+    cancelAutoSave();
+    editorRevision = 0;
 
     loadAdminPosts();
 }
@@ -241,6 +251,135 @@ function setEditorDisabled(disabled) {
     publishButton.disabled = disabled;
 }
 
+function cancelAutoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = null;
+    saveQueued = false;
+}
+
+function queueAutoSave() {
+    clearTimeout(autoSaveTimer);
+
+    autoSaveTimer = setTimeout(() => {
+        saveCurrentPost(true);
+    }, 1500);
+}
+
+function markEditorDirty() {
+    editorIsDirty = true;
+    editorRevision += 1;
+    editorMessage.textContent = 'unsaved';
+
+    queueAutoSave();
+}
+
+async function saveCurrentPost(automatic = false) {
+    if (activePostId === null || !editorIsDirty) {
+        return true;
+    }
+
+    const title = editorTitle.value.trim();
+
+    if (!title) {
+        editorMessage.textContent =
+            "title can't be empty :/";
+
+        return false;
+    }
+
+    if (saveInProgress) {
+        saveQueued = true;
+        return false;
+    }
+
+    cancelAutoSave();
+
+    const postId = activePostId;
+    const savingRevision = editorRevision;
+
+    saveInProgress = true;
+    savePostButton.disabled = true;
+
+    editorMessage.textContent = (
+        automatic
+            ? 'autosaving...'
+            : 'saving...'
+    );
+
+    try {
+        const response = await fetch(
+            `/api/admin/posts/${postId}`,
+            {
+                method: 'PATCH',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({
+                    title,
+                    excerpt: (
+                        editorExcerpt.value.trim() ||
+                        null
+                    ),
+                    content_markdown: editorContent.value
+                })
+            }
+        );
+
+        if (response.status === 401) {
+            showLogin();
+            return false;
+        }
+
+        const data = await readResponse(response);
+        const post = data.post;
+
+        if (activePostId !== postId) {
+            return true;
+        }
+
+        updateEditorStatus(post);
+
+        if (editorRevision === savingRevision) {
+            editorTitle.value = post.title;
+            editorExcerpt.value = post.excerpt || '';
+            editorContent.value = post.content_markdown;
+
+            renderMarkdownPreview();
+
+            editorReadingTime.textContent =
+                `${post.reading_minutes} min read`;
+
+            editorIsDirty = false;
+            editorMessage.textContent = 'saved';
+        } else {
+            editorIsDirty = true;
+            queueAutoSave();
+        }
+
+        return true;
+    } catch (error) {
+        editorMessage.textContent =
+            error.message || "couldn't save :/";
+
+        console.error(
+            'Post saving failed:',
+            error
+        );
+
+        return false;
+    } finally {
+        saveInProgress = false;
+        savePostButton.disabled = false;
+
+        if (saveQueued && editorIsDirty) {
+            saveQueued = false;
+            queueAutoSave();
+        }
+    }
+}
+
 function updateEditorStatus(post) {
     activePostStatus = post.status;
 
@@ -259,6 +398,9 @@ function updateEditorStatus(post) {
 async function openPostEditor(postId) {
     activePostId = postId;
     editorIsDirty = false;
+
+    cancelAutoSave();
+    editorRevision = 0;
 
     dashboardView.hidden = true;
     postEditor.hidden = false;
@@ -318,6 +460,9 @@ function closePostEditor() {
     ) {
         return;
     }
+
+    cancelAutoSave();
+    editorRevision = 0;
 
     activePostId = null;
     editorIsDirty = false;
@@ -485,15 +630,15 @@ editorBackButton.addEventListener('click', () => {
 });
 
 editorTitle.addEventListener('input', () => {
-    editorIsDirty = true;
+    markEditorDirty();
 });
 
 editorExcerpt.addEventListener('input', () => {
-    editorIsDirty = true;
+    markEditorDirty();
 });
 
 editorContent.addEventListener('input', () => {
-    editorIsDirty = true;
+    markEditorDirty();
     updateEditorReadingTime();
     renderMarkdownPreview();
 });
@@ -501,64 +646,8 @@ editorContent.addEventListener('input', () => {
 postEditor.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    if (activePostId === null) {
-        return;
-    }
-
-    savePostButton.disabled = true;
-    editorMessage.textContent = 'saving...';
-
-    try {
-        const response = await fetch(
-            `/api/admin/posts/${activePostId}`,
-            {
-                method: 'PATCH',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': csrfToken
-                },
-                body: JSON.stringify({
-                    title: editorTitle.value,
-                    excerpt: (
-                        editorExcerpt.value.trim() ||
-                        null
-                    ),
-                    content_markdown: editorContent.value
-                })
-            }
-        );
-
-        if (response.status === 401) {
-            showLogin();
-            return;
-        }
-
-        const data = await readResponse(response);
-        const post = data.post;
-
-        editorTitle.value = post.title;
-        editorExcerpt.value = post.excerpt || '';
-        editorContent.value = post.content_markdown;
-        renderMarkdownPreview();
-
-        updateEditorStatus(post);
-
-        editorReadingTime.textContent =
-            `${post.reading_minutes} min read`;
-
-        editorIsDirty = false;
-        editorMessage.textContent = 'saved';
-    } catch (error) {
-        editorMessage.textContent = error.message;
-
-        console.error(
-            'Post saving failed:',
-            error
-        );
-    } finally {
-        savePostButton.disabled = false;
-    }
+    cancelAutoSave();
+    await saveCurrentPost(false);
 });
 
 publishButton.addEventListener('click', async () => {
