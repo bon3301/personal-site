@@ -128,6 +128,8 @@
                 id="admin-session"
                 hidden>
 
+                <div class="dashboard-view" id="dashboard-view">
+
                 <header class="dashboard-header">
                     <div>
                         <p class="dashboard-label">blog admin</p>
@@ -213,6 +215,78 @@
 
                     <p class="admin-post-message">loading posts...</p>
                 </section>
+                </div>
+
+                <form class="post-editor" id="post-editor" hidden>
+                    <header class="editor-header">
+                        <div>
+                            <button
+                                class="editor-back"
+                                id="editor-back-button"
+                                type="button">
+
+                                ← posts
+                            </button>
+
+                            <p class="dashboard-label" id="editor-meta">
+                                loading post...
+                            </p>
+                        </div>
+
+                        <button
+                            class="primary-button"
+                            id="save-post-button"
+                            type="submit">
+
+                            save draft
+                        </button>
+                    </header>
+
+                    <label class="editor-field">
+                        <span>title</span>
+
+                        <input
+                            id="editor-title"
+                            type="text"
+                            maxlength="200"
+                            required>
+                    </label>
+
+                    <label class="editor-field">
+                        <span>excerpt</span>
+
+                        <textarea
+                            id="editor-excerpt"
+                            rows="3"
+                            maxlength="300"
+                            placeholder="Short description shown on the blog">
+                        </textarea>
+                    </label>
+
+                    <label class="editor-field">
+                        <span>markdown</span>
+
+                        <textarea
+                            class="markdown-input"
+                            id="editor-content"
+                            rows="18"
+                            maxlength="100000"
+                            spellcheck="true"
+                            placeholder="Start writing...">
+                        </textarea>
+                    </label>
+
+                    <footer class="editor-footer">
+                        <span id="editor-reading-time">1 min read</span>
+
+                        <span
+                            class="editor-message"
+                            id="editor-message"
+                            role="status"
+                            aria-live="polite">
+                        </span>
+                    </footer>
+                </form>
             </section>
         </section>
     </main>

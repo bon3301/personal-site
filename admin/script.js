@@ -17,7 +17,20 @@ const createPostButton = document.getElementById('create-post-button');
 const cancelPostButton = document.getElementById('cancel-post-button');
 const newPostMessage = document.getElementById('new-post-message');
 
+const dashboardView = document.getElementById('dashboard-view');
+const postEditor = document.getElementById('post-editor');
+const editorBackButton = document.getElementById('editor-back-button');
+const editorMeta = document.getElementById('editor-meta');
+const editorTitle = document.getElementById('editor-title');
+const editorExcerpt = document.getElementById('editor-excerpt');
+const editorContent = document.getElementById('editor-content');
+const savePostButton = document.getElementById('save-post-button');
+const editorReadingTime = document.getElementById('editor-reading-time');
+const editorMessage = document.getElementById('editor-message');
+
 let csrfToken = null;
+let activePostId = null;
+let editorIsDirty = false;
 
 function setMessage(element, message, state = '') {
     element.textContent = message;
@@ -35,6 +48,11 @@ function showLogin() {
     adminSession.hidden = true;
     adminPanel.classList.remove('dashboard-open');
     closeNewPostForm();
+
+    activePostId = null;
+    editorIsDirty = false;
+    dashboardView.hidden = false;
+    postEditor.hidden = true;
 }
 
 function showAdmin(token) {
@@ -43,6 +61,12 @@ function showAdmin(token) {
     adminSession.hidden = false;
     adminPanel.classList.add('dashboard-open');
     setMessage(sessionMessage, '');
+
+    activePostId = null;
+    editorIsDirty = false;
+    dashboardView.hidden = false;
+    postEditor.hidden = true;
+
     loadAdminPosts();
 }
 
@@ -76,13 +100,18 @@ function showPostMessage(message) {
 }
 
 function createAdminPostRow(post) {
-    const row = document.createElement('article');
-    const title = document.createElement('h2');
+    const row = document.createElement('button');
+    const title = document.createElement('span');
     const meta = document.createElement('div');
     const status = document.createElement('span');
     const updated = document.createElement('time');
 
     row.className = 'admin-post-row';
+    row.type = 'button';
+
+    row.addEventListener('click', () => {
+        openPostEditor(post.id);
+    });
 
     title.className = 'admin-post-title';
     title.textContent = post.title;
@@ -144,6 +173,112 @@ async function loadAdminPosts() {
     } finally {
         adminPostList.setAttribute('aria-busy', 'false');
     }
+}
+
+function estimateReadingMinutes(content) {
+    const trimmedContent = content.trim();
+
+    if (!trimmedContent) {
+        return 1;
+    }
+
+    const wordCount = trimmedContent.split(/\s+/).length;
+
+    return Math.max(
+        1,
+        Math.ceil(wordCount / 200)
+    );
+}
+
+function updateEditorReadingTime() {
+    const minutes = estimateReadingMinutes(
+        editorContent.value
+    );
+
+    editorReadingTime.textContent =
+        `${minutes} min read`;
+}
+
+function setEditorDisabled(disabled) {
+    editorTitle.disabled = disabled;
+    editorExcerpt.disabled = disabled;
+    editorContent.disabled = disabled;
+    savePostButton.disabled = disabled;
+}
+
+async function openPostEditor(postId) {
+    activePostId = postId;
+    editorIsDirty = false;
+
+    dashboardView.hidden = true;
+    postEditor.hidden = false;
+
+    postEditor.reset();
+    editorMeta.textContent = 'loading post...';
+    editorMessage.textContent = 'loading...';
+
+    setEditorDisabled(true);
+
+    let loaded = false;
+
+    try {
+        const response = await fetch(
+            `/api/admin/posts/${postId}`,
+            {
+                credentials: 'same-origin'
+            }
+        );
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const data = await readResponse(response);
+        const post = data.post;
+
+        editorTitle.value = post.title;
+        editorExcerpt.value = post.excerpt || '';
+        editorContent.value = post.content_markdown;
+
+        editorMeta.textContent =
+            `${post.status} / ${post.slug}`;
+
+        editorReadingTime.textContent =
+            `${post.reading_minutes} min read`;
+
+        editorMessage.textContent = '';
+        loaded = true;
+    } catch (error) {
+        editorMessage.textContent = error.message;
+
+        console.error(
+            'Post loading failed:',
+            error
+        );
+    } finally {
+        setEditorDisabled(!loaded);
+    }
+}
+
+function closePostEditor() {
+    if (
+        editorIsDirty &&
+        !window.confirm('Discard unsaved changes?')
+    ) {
+        return;
+    }
+
+    activePostId = null;
+    editorIsDirty = false;
+
+    postEditor.hidden = true;
+    dashboardView.hidden = false;
+
+    postEditor.reset();
+    editorMessage.textContent = '';
+
+    loadAdminPosts();
 }
 
 function openNewPostForm() {
@@ -295,6 +430,86 @@ newPostForm.addEventListener('submit', async (event) => {
     }
 });
 
+editorBackButton.addEventListener('click', () => {
+    closePostEditor();
+});
+
+editorTitle.addEventListener('input', () => {
+    editorIsDirty = true;
+});
+
+editorExcerpt.addEventListener('input', () => {
+    editorIsDirty = true;
+});
+
+editorContent.addEventListener('input', () => {
+    editorIsDirty = true;
+    updateEditorReadingTime();
+});
+
+postEditor.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (activePostId === null) {
+        return;
+    }
+
+    savePostButton.disabled = true;
+    editorMessage.textContent = 'saving...';
+
+    try {
+        const response = await fetch(
+            `/api/admin/posts/${activePostId}`,
+            {
+                method: 'PATCH',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({
+                    title: editorTitle.value,
+                    excerpt: (
+                        editorExcerpt.value.trim() ||
+                        null
+                    ),
+                    content_markdown: editorContent.value
+                })
+            }
+        );
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const data = await readResponse(response);
+        const post = data.post;
+
+        editorTitle.value = post.title;
+        editorExcerpt.value = post.excerpt || '';
+        editorContent.value = post.content_markdown;
+
+        editorMeta.textContent =
+            `${post.status} / ${post.slug}`;
+
+        editorReadingTime.textContent =
+            `${post.reading_minutes} min read`;
+
+        editorIsDirty = false;
+        editorMessage.textContent = 'saved';
+    } catch (error) {
+        editorMessage.textContent = error.message;
+
+        console.error(
+            'Post saving failed:',
+            error
+        );
+    } finally {
+        savePostButton.disabled = false;
+    }
+});
+
 logoutButton.addEventListener('click', async () => {
     logoutButton.disabled = true;
     setMessage(sessionMessage, 'signing out...');
@@ -322,6 +537,15 @@ logoutButton.addEventListener('click', async () => {
     } finally {
         logoutButton.disabled = false;
     }
+});
+
+window.addEventListener('beforeunload', (event) => {
+    if (!editorIsDirty) {
+        return;
+    }
+
+    event.preventDefault();
+    event.returnValue = '';
 });
 
 checkSession();

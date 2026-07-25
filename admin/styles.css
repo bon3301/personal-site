@@ -224,6 +224,119 @@
     font-size: 0.72rem;
 }
 
+.dashboard-view[hidden],
+.post-editor[hidden] {
+    display: none;
+}
+
+.post-editor {
+    width: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.6rem;
+    background-color: var(--bg-color);
+}
+
+.editor-header {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.editor-back {
+    margin-bottom: 0.6rem;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font: inherit;
+    cursor: pointer;
+}
+
+.editor-back:hover {
+    color: var(--text-color);
+}
+
+.editor-field {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.editor-field span {
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.editor-field input,
+.editor-field textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font: inherit;
+    line-height: 1.6;
+    outline: none;
+}
+
+.editor-field input:focus,
+.editor-field textarea:focus {
+    border-color: var(--text-color);
+}
+
+.editor-field textarea {
+    resize: vertical;
+}
+
+.markdown-input {
+    min-height: 360px;
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.editor-footer {
+    min-height: 1.25rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.72rem;
+}
+
+.admin-post-row {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.admin-post-row:hover .admin-post-title {
+    transform: translateX(4px);
+}
+
+.admin-post-row:focus-visible {
+    outline: 2px solid var(--text-color);
+    outline-offset: 3px;
+}
+
+.admin-post-title {
+    transition: transform var(--transition);
+}
+
 @media (max-width: 600px) {
     .dashboard-header {
         align-items: flex-end;
