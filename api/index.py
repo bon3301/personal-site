@@ -104,6 +104,58 @@ def health():
     return jsonify({"status": "ok"})
 
 
+@app.get("/api/posts/<string:slug>")
+def get_public_post(slug):
+    session = None
+
+    try:
+        session = get_session()
+
+        statement = (
+            select(Post)
+            .where(
+                Post.slug == slug,
+                Post.status == "published",
+                Post.published_at.is_not(None)
+            )
+        )
+
+        post = session.scalar(statement)
+
+        if post is None:
+            return jsonify({
+                "error": "Post not found"
+            }), 404
+
+        return jsonify({
+            "post": {
+                "slug": post.slug,
+                "title": post.title,
+                "excerpt": post.excerpt,
+                "content_markdown": post.content_markdown,
+                "reading_minutes": post.reading_minutes,
+                "published_at": (
+                    post.published_at
+                    .date()
+                    .isoformat()
+                )
+            }
+        })
+
+    except (SQLAlchemyError, RuntimeError):
+        app.logger.exception(
+            "Failed to load a public post"
+        )
+
+        return jsonify({
+            "error": "Unable to load post"
+        }), 500
+
+    finally:
+        if session is not None:
+            session.close()
+
+
 @app.get("/api/posts")
 def get_posts():
     session = None
