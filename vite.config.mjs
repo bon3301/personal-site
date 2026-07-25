@@ -7,11 +7,20 @@ const projectRoot = fileURLToPath(
 );
 
 export default defineConfig({
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://127.0.0.1:5000',
+                changeOrigin: true
+            }
+        }
+    },
     build: {
         rolldownOptions: {
             input: {
                 home: resolve(projectRoot, 'index.html'),
-                blog: resolve(projectRoot, 'blog/index.html')
+                blog: resolve(projectRoot, 'blog/index.html'),
+                admin: resolve(projectRoot, 'admin/index.html')
             }
         }
     }
