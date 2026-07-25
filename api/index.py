@@ -5,10 +5,13 @@ from flask import Flask, jsonify
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
+from api.auth import configure_admin_auth
 from api.database import get_session
 from api.models import Post
 
 app = Flask(__name__)
+
+configure_admin_auth(app)
 
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 CURRENTLY_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing"
