@@ -6,7 +6,7 @@
             "destination": "/api/index"
         },
         {
-            "source": "^/blog/([^/]+)/?$",
+            "source": "^/blog/([a-z0-9-]+)/?$",
             "destination": "/blog/post/index.html"
         }
     ]

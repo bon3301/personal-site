@@ -313,6 +313,21 @@
     font-size: 0.72rem;
 }
 
+.editor-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.publish-button[data-status="draft"] {
+    border-color: var(--accent-spotify);
+}
+
+.publish-button[data-status="published"] {
+    border-color: #f87171;
+    color: #f87171;
+}
+
 .admin-post-row {
     width: 100%;
     border: none;
@@ -477,5 +492,14 @@
     .markdown-input,
     .markdown-preview {
         min-height: 320px;
+    }
+
+    .editor-header {
+        align-items: flex-end;
+    }
+
+    .editor-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
     }
 }

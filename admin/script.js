@@ -31,10 +31,12 @@ const savePostButton = document.getElementById('save-post-button');
 const editorReadingTime = document.getElementById('editor-reading-time');
 const editorMessage = document.getElementById('editor-message');
 const markdownPreview = document.getElementById('markdown-preview');
+const publishButton = document.getElementById('publish-button');
 
 let csrfToken = null;
 let activePostId = null;
 let editorIsDirty = false;
+let activePostStatus = null;
 
 function setMessage(element, message, state = '') {
     element.textContent = message;
@@ -54,6 +56,7 @@ function showLogin() {
     closeNewPostForm();
 
     activePostId = null;
+    activePostStatus = null;
     editorIsDirty = false;
     dashboardView.hidden = false;
     postEditor.hidden = true;
@@ -67,6 +70,7 @@ function showAdmin(token) {
     setMessage(sessionMessage, '');
 
     activePostId = null;
+    activePostStatus = null;
     editorIsDirty = false;
     dashboardView.hidden = false;
     postEditor.hidden = true;
@@ -234,6 +238,22 @@ function setEditorDisabled(disabled) {
     editorExcerpt.disabled = disabled;
     editorContent.disabled = disabled;
     savePostButton.disabled = disabled;
+    publishButton.disabled = disabled;
+}
+
+function updateEditorStatus(post) {
+    activePostStatus = post.status;
+
+    editorMeta.textContent =
+        `${post.status} / ${post.slug}`;
+
+    publishButton.dataset.status = post.status;
+
+    publishButton.textContent = (
+        post.status === 'published'
+            ? 'unpublish'
+            : 'publish'
+    );
 }
 
 async function openPostEditor(postId) {
@@ -272,8 +292,7 @@ async function openPostEditor(postId) {
         editorContent.value = post.content_markdown;
         renderMarkdownPreview();
 
-        editorMeta.textContent =
-            `${post.status} / ${post.slug}`;
+        updateEditorStatus(post);
 
         editorReadingTime.textContent =
             `${post.reading_minutes} min read`;
@@ -523,8 +542,7 @@ postEditor.addEventListener('submit', async (event) => {
         editorContent.value = post.content_markdown;
         renderMarkdownPreview();
 
-        editorMeta.textContent =
-            `${post.status} / ${post.slug}`;
+        updateEditorStatus(post);
 
         editorReadingTime.textContent =
             `${post.reading_minutes} min read`;
@@ -539,6 +557,86 @@ postEditor.addEventListener('submit', async (event) => {
             error
         );
     } finally {
+        savePostButton.disabled = false;
+    }
+});
+
+publishButton.addEventListener('click', async () => {
+    if (activePostId === null) {
+        return;
+    }
+
+    if (editorIsDirty) {
+        editorMessage.textContent =
+            'save your changes before publishing';
+
+        return;
+    }
+
+    const isPublished =
+        activePostStatus === 'published';
+
+    const action = (
+        isPublished
+            ? 'unpublish'
+            : 'publish'
+    );
+
+    const confirmed = window.confirm(
+        isPublished
+            ? 'unpublish this post?'
+            : 'publish this post publicly?'
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    publishButton.disabled = true;
+    savePostButton.disabled = true;
+
+    editorMessage.textContent = (
+        isPublished
+            ? 'unpublishing...'
+            : 'publishing...'
+    );
+
+    try {
+        const response = await fetch(
+            `/api/admin/posts/${activePostId}/${action}`,
+            {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-Token': csrfToken
+                }
+            }
+        );
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        const data = await readResponse(response);
+        const post = data.post;
+
+        updateEditorStatus(post);
+
+        editorMessage.textContent = (
+            post.status === 'published'
+                ? 'published'
+                : 'returned to drafts'
+        );
+    } catch (error) {
+        editorMessage.textContent = error.message;
+
+        console.error(
+            'Post publication failed:',
+            error
+        );
+    } finally {
+        publishButton.disabled = false;
         savePostButton.disabled = false;
     }
 });

@@ -1,6 +1,8 @@
 import math
 import re
 
+from datetime import datetime, timezone
+
 from flask import (
     Blueprint,
     current_app,
@@ -348,6 +350,101 @@ def update_admin_post(post_id):
 
         return jsonify({
             "error": "Unable to update post"
+        }), 500
+
+    finally:
+        if database_session is not None:
+            database_session.close()
+
+
+@admin_posts.post("/posts/<int:post_id>/publish")
+@admin_required
+@csrf_required
+def publish_admin_post(post_id):
+    database_session = None
+
+    try:
+        database_session = get_session()
+        post = database_session.get(Post, post_id)
+
+        if post is None:
+            return jsonify({
+                "error": "post not found :/"
+            }), 404
+
+        if not post.content_markdown.strip():
+            return jsonify({
+                "error": (
+                    "write something before publishing"
+                )
+            }), 400
+
+        if post.status != "published":
+            post.status = "published"
+            post.published_at = datetime.now(
+                timezone.utc
+            )
+
+            database_session.commit()
+            database_session.refresh(post)
+
+        return jsonify({
+            "post": serialize_full_post(post)
+        })
+
+    except (SQLAlchemyError, RuntimeError):
+        if database_session is not None:
+            database_session.rollback()
+
+        current_app.logger.exception(
+            "failed to publish post"
+        )
+
+        return jsonify({
+            "error": "unable to publish post"
+        }), 500
+
+    finally:
+        if database_session is not None:
+            database_session.close()
+
+
+@admin_posts.post("/posts/<int:post_id>/unpublish")
+@admin_required
+@csrf_required
+def unpublish_admin_post(post_id):
+    database_session = None
+
+    try:
+        database_session = get_session()
+        post = database_session.get(Post, post_id)
+
+        if post is None:
+            return jsonify({
+                "error": "post not found :/"
+            }), 404
+
+        if post.status != "draft":
+            post.status = "draft"
+            post.published_at = None
+
+            database_session.commit()
+            database_session.refresh(post)
+
+        return jsonify({
+            "post": serialize_full_post(post)
+        })
+
+    except (SQLAlchemyError, RuntimeError):
+        if database_session is not None:
+            database_session.rollback()
+
+        current_app.logger.exception(
+            "unable to unpublish..."
+        )
+
+        return jsonify({
+            "error": "unable to unpublish post"
         }), 500
 
     finally:

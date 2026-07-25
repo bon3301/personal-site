@@ -17,7 +17,7 @@ function blogPostRoutes() {
                     const pathname = url.split('?')[0];
 
                     if (
-                        /^\/blog\/[^/]+\/?$/.test(pathname) &&
+                        /^\/blog\/[a-z0-9-]+\/?$/.test(pathname) &&
                         pathname !== '/blog/post/' &&
                         pathname !== '/blog/post'
                     ) {
