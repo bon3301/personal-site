@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/bon3301/personal-site#readme",
   "dependencies": {
+    "dompurify": "^3.4.12",
     "lucide": "^1.26.0",
+    "marked": "^18.0.7",
     "simple-icons": "^16.27.0"
   },
   "devDependencies": {

@@ -337,6 +337,113 @@
     transition: transform var(--transition);
 }
 
+.editor-workspace {
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 1rem;
+}
+
+.editor-workspace .editor-field {
+    margin-top: 0;
+}
+
+.editor-preview-pane {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.editor-pane-label {
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.markdown-input,
+.markdown-preview {
+    min-height: 420px;
+}
+
+.markdown-preview {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    overflow: auto;
+    overflow-wrap: anywhere;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+.markdown-preview.empty {
+    color: var(--text-secondary);
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3 {
+    margin: 1.5rem 0 0.75rem;
+    line-height: 1.25;
+}
+
+.markdown-preview h1:first-child,
+.markdown-preview h2:first-child,
+.markdown-preview h3:first-child {
+    margin-top: 0;
+}
+
+.markdown-preview p,
+.markdown-preview ul,
+.markdown-preview ol,
+.markdown-preview blockquote,
+.markdown-preview pre {
+    margin: 0.9rem 0;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+    padding-left: 1.5rem;
+}
+
+.markdown-preview blockquote {
+    padding-left: 1rem;
+    border-left: 3px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.markdown-preview code {
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.88em;
+}
+
+.markdown-preview :not(pre) > code {
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+    background-color: var(--menu-hover);
+}
+
+.markdown-preview pre {
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    overflow-x: auto;
+}
+
+.markdown-preview a {
+    color: var(--text-color);
+    text-underline-offset: 3px;
+}
+
+.markdown-preview img {
+    max-width: 100%;
+    border-radius: 0.4rem;
+}
+
 @media (max-width: 600px) {
     .dashboard-header {
         align-items: flex-end;
@@ -361,5 +468,14 @@
 
     .new-post-controls input {
         grid-column: 1 / -1;
+    }
+
+    .editor-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .markdown-input,
+    .markdown-preview {
+        min-height: 320px;
     }
 }

@@ -263,18 +263,34 @@
                         </textarea>
                     </label>
 
-                    <label class="editor-field">
-                        <span>markdown</span>
+                    <div class="editor-workspace">
+                        <label class="editor-field editor-markdown-pane">
+                            <span>markdown</span>
 
-                        <textarea
-                            class="markdown-input"
-                            id="editor-content"
-                            rows="18"
-                            maxlength="100000"
-                            spellcheck="true"
-                            placeholder="Start writing...">
-                        </textarea>
-                    </label>
+                            <textarea
+                                class="markdown-input"
+                                id="editor-content"
+                                rows="18"
+                                maxlength="100000"
+                                spellcheck="true"
+                                placeholder="Start writing...">
+                            </textarea>
+                        </label>
+
+                        <section
+                            class="editor-preview-pane"
+                            aria-label="Markdown preview">
+
+                            <span class="editor-pane-label">preview</span>
+
+                            <article
+                                class="markdown-preview empty"
+                                id="markdown-preview">
+
+                                Nothing to preview yet.
+                            </article>
+                        </section>
+                    </div>
 
                     <footer class="editor-footer">
                         <span id="editor-reading-time">1 min read</span>

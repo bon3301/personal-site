@@ -1,3 +1,6 @@
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+
 const loginForm = document.getElementById('login-form');
 const passwordInput = document.getElementById('admin-password');
 const loginButton = document.getElementById('login-button');
@@ -27,6 +30,7 @@ const editorContent = document.getElementById('editor-content');
 const savePostButton = document.getElementById('save-post-button');
 const editorReadingTime = document.getElementById('editor-reading-time');
 const editorMessage = document.getElementById('editor-message');
+const markdownPreview = document.getElementById('markdown-preview');
 
 let csrfToken = null;
 let activePostId = null;
@@ -175,6 +179,32 @@ async function loadAdminPosts() {
     }
 }
 
+function renderMarkdownPreview() {
+    const markdown = editorContent.value;
+
+    if (!markdown.trim()) {
+        markdownPreview.classList.add('empty');
+        markdownPreview.textContent =
+            'Nothing to preview yet.';
+
+        return;
+    }
+
+    const parsedMarkdown = marked.parse(markdown);
+
+    const safeHtml = DOMPurify.sanitize(
+        parsedMarkdown,
+        {
+            USE_PROFILES: {
+                html: true
+            }
+        }
+    );
+
+    markdownPreview.classList.remove('empty');
+    markdownPreview.innerHTML = safeHtml;
+}
+
 function estimateReadingMinutes(content) {
     const trimmedContent = content.trim();
 
@@ -240,6 +270,7 @@ async function openPostEditor(postId) {
         editorTitle.value = post.title;
         editorExcerpt.value = post.excerpt || '';
         editorContent.value = post.content_markdown;
+        renderMarkdownPreview();
 
         editorMeta.textContent =
             `${post.status} / ${post.slug}`;
@@ -445,6 +476,7 @@ editorExcerpt.addEventListener('input', () => {
 editorContent.addEventListener('input', () => {
     editorIsDirty = true;
     updateEditorReadingTime();
+    renderMarkdownPreview();
 });
 
 postEditor.addEventListener('submit', async (event) => {
@@ -489,6 +521,7 @@ postEditor.addEventListener('submit', async (event) => {
         editorTitle.value = post.title;
         editorExcerpt.value = post.excerpt || '';
         editorContent.value = post.content_markdown;
+        renderMarkdownPreview();
 
         editorMeta.textContent =
             `${post.status} / ${post.slug}`;
