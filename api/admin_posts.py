@@ -1,8 +1,15 @@
-from flask import Blueprint, current_app, jsonify
+import re
+
+from flask import (
+    Blueprint,
+    current_app,
+    jsonify,
+    request
+)
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from api.auth import admin_required
+from api.auth import admin_required, csrf_required
 from api.database import get_session
 from api.models import Post
 
@@ -34,6 +41,37 @@ def serialize_post(post):
             else None
         )
     }
+
+
+def make_slug(title):
+    slug = re.sub(
+        r"[^a-z0-9]+",
+        "-",
+        title.lower()
+    ).strip("-")
+
+    return slug[:140].rstrip("-") or "post"
+
+
+def find_available_slug(database_session, title):
+    base_slug = make_slug(title)
+    slug = base_slug
+    number = 2
+
+    while database_session.scalar(
+        select(Post.id).where(Post.slug == slug)
+    ) is not None:
+        suffix = f"-{number}"
+        available_length = 160 - len(suffix)
+
+        slug = (
+            f"{base_slug[:available_length].rstrip('-')}"
+            f"{suffix}"
+        )
+
+        number += 1
+
+    return slug
 
 
 @admin_posts.after_request
@@ -75,6 +113,73 @@ def list_admin_posts():
 
         return jsonify({
             "error": "Unable to load admin posts"
+        }), 500
+
+    finally:
+        if database_session is not None:
+            database_session.close()
+
+
+@admin_posts.post("/posts")
+@admin_required
+@csrf_required
+def create_admin_post():
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "A JSON body is required"
+        }), 400
+
+    title = data.get("title")
+
+    if not isinstance(title, str):
+        return jsonify({
+            "error": "A title is required"
+        }), 400
+
+    title = title.strip()
+
+    if not title or len(title) > 200:
+        return jsonify({
+            "error": "Title must be between 1 and 200 characters"
+        }), 400
+
+    database_session = None
+
+    try:
+        database_session = get_session()
+
+        post = Post(
+            title=title,
+            slug=find_available_slug(
+                database_session,
+                title
+            ),
+            excerpt=None,
+            content_markdown="",
+            status="draft",
+            reading_minutes=1
+        )
+
+        database_session.add(post)
+        database_session.commit()
+        database_session.refresh(post)
+
+        return jsonify({
+            "post": serialize_post(post)
+        }), 201
+
+    except (SQLAlchemyError, RuntimeError):
+        if database_session is not None:
+            database_session.rollback()
+
+        current_app.logger.exception(
+            "Failed to create an admin post"
+        )
+
+        return jsonify({
+            "error": "Unable to create post"
         }), 500
 
     finally:

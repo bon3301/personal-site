@@ -10,6 +10,13 @@ const sessionMessage = document.getElementById('session-message');
 const adminPanel = document.querySelector('.admin-panel');
 const adminPostList = document.getElementById('admin-post-list');
 
+const newPostButton = document.getElementById('new-post-button');
+const newPostForm = document.getElementById('new-post-form');
+const newPostTitle = document.getElementById('new-post-title');
+const createPostButton = document.getElementById('create-post-button');
+const cancelPostButton = document.getElementById('cancel-post-button');
+const newPostMessage = document.getElementById('new-post-message');
+
 let csrfToken = null;
 
 function setMessage(element, message, state = '') {
@@ -27,6 +34,7 @@ function showLogin() {
     loginForm.hidden = false;
     adminSession.hidden = true;
     adminPanel.classList.remove('dashboard-open');
+    closeNewPostForm();
 }
 
 function showAdmin(token) {
@@ -138,6 +146,19 @@ async function loadAdminPosts() {
     }
 }
 
+function openNewPostForm() {
+    newPostForm.hidden = false;
+    newPostButton.hidden = true;
+    newPostTitle.focus();
+}
+
+function closeNewPostForm() {
+    newPostForm.hidden = true;
+    newPostButton.hidden = false;
+    newPostForm.reset();
+    newPostMessage.textContent = '';
+}
+
 async function checkSession() {
     loginButton.disabled = true;
     setMessage(authMessage, 'checking session...');
@@ -214,6 +235,63 @@ loginForm.addEventListener('submit', async (event) => {
         );
     } finally {
         loginButton.disabled = false;
+    }
+});
+
+newPostButton.addEventListener('click', () => {
+    openNewPostForm();
+});
+
+cancelPostButton.addEventListener('click', () => {
+    closeNewPostForm();
+});
+
+newPostForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const title = newPostTitle.value.trim();
+
+    if (!title) {
+        newPostTitle.focus();
+        return;
+    }
+
+    createPostButton.disabled = true;
+    cancelPostButton.disabled = true;
+    newPostMessage.textContent = 'creating draft...';
+
+    try {
+        const response = await fetch('/api/admin/posts', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({
+                title
+            })
+        });
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        await readResponse(response);
+
+        closeNewPostForm();
+        await loadAdminPosts();
+    } catch (error) {
+        newPostMessage.textContent = error.message;
+
+        console.error(
+            'Draft creation failed:',
+            error
+        );
+    } finally {
+        createPostButton.disabled = false;
+        cancelPostButton.disabled = false;
     }
 });
 

@@ -134,14 +134,68 @@
                         <h1>posts</h1>
                     </div>
 
-                    <button
-                        class="secondary-button"
-                        id="logout-button"
-                        type="button">
+                    <div class="dashboard-actions">
+                        <button
+                            class="primary-button"
+                            id="new-post-button"
+                            type="button">
 
-                        sign out
-                    </button>
+                            new post
+                        </button>
+
+                        <button
+                            class="secondary-button"
+                            id="logout-button"
+                            type="button">
+
+                            sign out
+                        </button>
+                    </div>
                 </header>
+
+                <form
+                    class="new-post-form"
+                    id="new-post-form"
+                    hidden>
+
+                    <label class="visually-hidden" for="new-post-title">
+                        post title
+                    </label>
+
+                    <div class="new-post-controls">
+                        <input
+                            id="new-post-title"
+                            name="title"
+                            type="text"
+                            placeholder="post title"
+                            autocomplete="off"
+                            maxlength="200"
+                            required>
+
+                        <button
+                            class="primary-button"
+                            id="create-post-button"
+                            type="submit">
+
+                            create draft
+                        </button>
+
+                        <button
+                            class="secondary-button"
+                            id="cancel-post-button"
+                            type="button">
+
+                            cancel
+                        </button>
+                    </div>
+
+                    <p
+                        class="new-post-message"
+                        id="new-post-message"
+                        role="status"
+                        aria-live="polite">
+                    </p>
+                </form>
 
                 <p
                     class="auth-message visually-hidden"
