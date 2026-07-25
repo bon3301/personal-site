@@ -128,6 +128,21 @@
                 id="admin-session"
                 hidden>
 
+                <header class="dashboard-header">
+                    <div>
+                        <p class="dashboard-label">blog admin</p>
+                        <h1>posts</h1>
+                    </div>
+
+                    <button
+                        class="secondary-button"
+                        id="logout-button"
+                        type="button">
+
+                        sign out
+                    </button>
+                </header>
+
                 <p
                     class="auth-message visually-hidden"
                     id="session-message"
@@ -135,13 +150,15 @@
                     aria-live="polite">
                 </p>
 
-                <button
-                    class="secondary-button"
-                    id="logout-button"
-                    type="button">
+                <section
+                    class="admin-post-list"
+                    id="admin-post-list"
+                    aria-label="Admin blog posts"
+                    aria-live="polite"
+                    aria-busy="true">
 
-                    sign out
-                </button>
+                    <p class="admin-post-message">loading posts...</p>
+                </section>
             </section>
         </section>
     </main>
