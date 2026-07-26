@@ -7,9 +7,9 @@
 
     <meta
         name="description"
-        content="Favorite albums from bon3301">
+        content="Favorite shows from bon3301">
 
-    <title>albums | bon3301</title>
+    <title>shows | bon3301</title>
 
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
@@ -71,13 +71,13 @@
             </button>
 
             <div class="dropdown-menu" id="more-menu">
-                <a href="/shows/" class="dropdown-item">shows</a>
                 <a
-                    href="/albums/"
+                    href="/shows/"
                     class="dropdown-item"
                     aria-current="page">
-                    albums
+                    shows
                 </a>
+                <a href="/albums/" class="dropdown-item">albums</a>
             </div>
         </div>
     </nav>
@@ -95,53 +95,18 @@
     <canvas id="canvas" aria-hidden="true"></canvas>
 
     <main>
-        <header class="albums-header">
-            <h1>albums</h1>
+        <header class="shows-header">
+            <h1>shows</h1>
 
             <p>
-                albums I like, carousel go wee
+                Some shows that have permanently occupied space in my head.
             </p>
         </header>
 
-        <section class="album-browser" aria-label="Album collection">
-            <div class="cover-flow">
-                <button
-                    class="flow-button"
-                    id="previousAlbum"
-                    type="button"
-                    aria-label="Previous album">
-                    &larr;
-                </button>
-
-                <div
-                    class="cover-stage"
-                    id="coverStage"
-                    aria-live="polite">
-                </div>
-
-                <button
-                    class="flow-button"
-                    id="nextAlbum"
-                    type="button"
-                    aria-label="Next album">
-                    &rarr;
-                </button>
-            </div>
-
-            <div class="album-details">
-                <p class="album-position" id="albumPosition"></p>
-                <h2 id="albumTitle"></h2>
-                <p id="albumArtist"></p>
-            </div>
-
-            <section class="track-panel" aria-labelledby="trackHeading">
-                <div class="track-heading">
-                    <h2 id="trackHeading">tracklist</h2>
-                    <span id="trackCount"></span>
-                </div>
-
-                <ol class="track-list" id="trackList"></ol>
-            </section>
+        <section
+            class="show-collage"
+            id="showCollage"
+            aria-label="Favorite shows">
         </section>
     </main>
 

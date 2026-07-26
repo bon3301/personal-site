@@ -50,6 +50,7 @@ export default defineConfig({
                 home: resolve(projectRoot, 'index.html'),
                 projects: resolve(projectRoot, 'projects/index.html'),
                 albums: resolve(projectRoot, 'albums/index.html'),
+                shows: resolve(projectRoot, 'shows/index.html'),
                 blog: resolve(projectRoot, 'blog/index.html'),
                 admin: resolve(projectRoot, 'admin/index.html'),
                 article: resolve(
