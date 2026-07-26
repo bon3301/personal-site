@@ -1,5 +1,5 @@
 # portfolio
-very own personal portfolio built with a rather simple stack.
+very own personal portfolio built with a rather simple* stack.
 
 ### Frontend
 - HTML
