@@ -7,9 +7,9 @@
 
     <meta
         name="description"
-        content="Personal notes and updates from bon3301">
+        content="Favorite albums from bon3301">
 
-    <title>blog | bon3301</title>
+    <title>albums | bon3301</title>
 
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
@@ -56,7 +56,8 @@
         </a>
 
         <a href="/projects/" class="nav-link">projects</a>
-        <a href="/blog/" class="nav-link" aria-current="page">blog</a>
+
+        <a href="/blog/" class="nav-link">blog</a>
 
         <div class="dropdown">
             <button
@@ -71,7 +72,12 @@
 
             <div class="dropdown-menu" id="more-menu">
                 <a href="/#shows" class="dropdown-item">shows</a>
-                <a href="/albums/" class="dropdown-item">albums</a>
+                <a
+                    href="/albums/"
+                    class="dropdown-item"
+                    aria-current="page">
+                    albums
+                </a>
             </div>
         </div>
     </nav>
@@ -89,23 +95,53 @@
     <canvas id="canvas" aria-hidden="true"></canvas>
 
     <main>
-        <header class="blog-header">
-            <h1>blog</h1>
+        <header class="albums-header">
+            <h1>albums</h1>
 
-            <p class="blog-caption">
-                Personal notes, project updates and whatever else I feel like
-                writing about.
+            <p>
+                albums I like, carousel go wee
             </p>
         </header>
 
-        <section
-            class="post-list"
-            id="post-list"
-            aria-label="Blog posts"
-            aria-live="polite"
-            aria-busy="true">
+        <section class="album-browser" aria-label="Album collection">
+            <div class="cover-flow">
+                <button
+                    class="flow-button"
+                    id="previousAlbum"
+                    type="button"
+                    aria-label="Previous album">
+                    &larr;
+                </button>
 
-            <p class="post-message">Loading posts...</p>
+                <div
+                    class="cover-stage"
+                    id="coverStage"
+                    aria-live="polite">
+                </div>
+
+                <button
+                    class="flow-button"
+                    id="nextAlbum"
+                    type="button"
+                    aria-label="Next album">
+                    &rarr;
+                </button>
+            </div>
+
+            <div class="album-details">
+                <p class="album-position" id="albumPosition"></p>
+                <h2 id="albumTitle"></h2>
+                <p id="albumArtist"></p>
+            </div>
+
+            <section class="track-panel" aria-labelledby="trackHeading">
+                <div class="track-heading">
+                    <h2 id="trackHeading">tracklist</h2>
+                    <span id="trackCount"></span>
+                </div>
+
+                <ol class="track-list" id="trackList"></ol>
+            </section>
         </section>
     </main>
 

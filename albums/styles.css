@@ -1,0 +1,226 @@
+main {
+    position: relative;
+    z-index: 1;
+    width: min(
+        1000px,
+        calc(100% - clamp(1.25rem, 14vw, 5.5rem) - 2rem)
+    );
+    margin-left: clamp(1.25rem, 14vw, 5.5rem);
+    padding: 10rem 0 5rem;
+}
+
+.albums-header {
+    max-width: 600px;
+}
+
+.albums-header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    letter-spacing: -0.03em;
+}
+
+.albums-header p {
+    margin-top: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.album-browser {
+    margin-top: 3rem;
+}
+
+.cover-flow {
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+    align-items: center;
+    background-color: var(--bg-color);
+}
+
+.cover-stage {
+    position: relative;
+    height: 340px;
+    overflow: hidden;
+    perspective: 900px;
+}
+
+.flow-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-color);
+    background: var(--bg-color);
+    cursor: pointer;
+}
+
+.flow-button:hover {
+    background-color: var(--menu-hover);
+}
+
+.album-details {
+    min-height: 7rem;
+    padding-top: 1.5rem;
+    text-align: center;
+}
+
+.album-position {
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.75rem;
+}
+
+.album-details h2 {
+    margin-top: 0.5rem;
+    font-size: 1.35rem;
+}
+
+.album-details > p:last-child {
+    margin-top: 0.35rem;
+    color: var(--text-secondary);
+}
+
+.track-panel {
+    max-width: 650px;
+    margin: 2rem auto 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.track-heading {
+    padding: 1.25rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.track-heading h2 {
+    font-size: 1rem;
+}
+
+.track-heading span {
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.75rem;
+}
+
+.track-list {
+    padding-left: 2.5rem;
+}
+
+@media (max-width: 700px) {
+    main {
+        width: calc(100% - 2.5rem);
+        margin-left: 1.25rem;
+        padding-top: 8rem;
+    }
+
+    .cover-flow {
+        grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+    }
+
+    .cover-stage {
+        height: 260px;
+    }
+
+    .flow-button {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+}
+
+.album-cover {
+    --cover-x: 0%;
+    --cover-turn: 0deg;
+    --cover-scale: 1;
+    --cover-opacity: 1;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(10rem, 25vw, 15rem);
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 0.3rem;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    cursor: pointer;
+    opacity: var(--cover-opacity);
+    transform:
+        translate(-50%, -50%)
+        translateX(var(--cover-x))
+        rotateY(var(--cover-turn))
+        scale(var(--cover-scale));
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
+    transition:
+        transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 350ms ease,
+        border-color 350ms ease,
+        filter 350ms ease;
+}
+
+.album-cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.album-cover:not([aria-pressed="true"]):hover {
+    filter: brightness(1.15);
+}
+
+.album-cover[aria-pressed="true"] {
+    border-color: var(--text-color);
+}
+
+.album-cover:focus-visible,
+.flow-button:focus-visible {
+    outline: 2px solid var(--text-color);
+    outline-offset: 4px;
+}
+
+.cover-stage {
+    touch-action: pan-y;
+}
+
+.track-list {
+    list-style-position: outside;
+}
+
+.track-list li {
+    padding: 0.9rem 0.5rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.track-list li:last-child {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.track-list li::marker {
+    color: var(--text-secondary);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 700px) {
+    .album-cover {
+        width: 10.5rem;
+    }
+
+    .album-details h2 {
+        font-size: 1.15rem;
+    }
+
+    .track-panel {
+        margin-top: 1.5rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .album-cover {
+        transition: none;
+    }
+}
