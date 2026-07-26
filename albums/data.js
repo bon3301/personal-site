@@ -4,7 +4,7 @@ export const albums = [
         title: 'Goodbye & Good Riddance',
         artist: 'Juice WRLD',
         year: 2018,
-        cover: './covers/goodbye-and-good-riddance.jpg',
+        cover: '/albums/covers/goodbye-and-good-riddance.jpg',
         tracks: [
             "Intro",
             "All Girls Are The Same",
@@ -29,7 +29,7 @@ export const albums = [
         title: 'Future & Juice WRLD Present... WRLD ON DRUGS',
         artist: 'Future & Juice WRLD',
         year: 2018,
-        cover: './covers/wrld-on-drugs.jpg',
+        cover: '/albums/covers/wrld-on-drugs.jpg',
         tracks: [
             "Jet Lag (feat. Young Scooter)",
             "Astronauts",
@@ -54,7 +54,7 @@ export const albums = [
         title: 'Death Race for Love',
         artist: 'Juice WRLD',
         year: 2019,
-        cover: './covers/death-race-for-love.jpg',
+        cover: '/albums/covers/death-race-for-love.jpg',
         tracks: [
             "Empty",
             "Maze",
@@ -85,7 +85,7 @@ export const albums = [
         title: 'Legends Never Die',
         artist: 'Juice WRLD',
         year: 2020,
-        cover: './covers/legends-never-die.jpg',
+        cover: '/albums/covers/legends-never-die.jpg',
         tracks: [
             "Anxiety - Intro",
             "Conversations",
@@ -116,7 +116,7 @@ export const albums = [
         title: 'Fighting Demons',
         artist: 'Juice WRLD',
         year: 2021,
-        cover: './covers/fighting-demons.jpg',
+        cover: '/albums/covers/fighting-demons.jpg',
         tracks: [
             "Burn",
             "Already Dead",
@@ -143,7 +143,7 @@ export const albums = [
         title: 'The Party Never Ends',
         artist: 'Juice WRLD',
         year: 2024,
-        cover: './covers/the-party-never-ends.jpg',
+        cover: '/albums/covers/the-party-never-ends.jpg',
         tracks: [
             "The Party Never Ends",
             "Misfit",
