@@ -12,6 +12,11 @@ const articleReadingTime = document.getElementById(
 const articleContent = document.getElementById('article-content');
 const articleMessage = document.getElementById('article-message');
 
+function showArticleMessage(message, state) {
+    articleMessage.textContent = message;
+    articleMessage.dataset.state = state;
+}
+
 function getPostSlug() {
     const pathParts = window.location.pathname
         .split('/')
@@ -95,8 +100,10 @@ async function loadPost() {
     const slug = getPostSlug();
 
     if (!slug) {
-        articleMessage.textContent =
-            'This post is not available.';
+        showArticleMessage(
+            "couldn't find that post :/",
+            'not-found'
+        );
 
         articleShell.setAttribute('aria-busy', 'false');
         return;
@@ -108,27 +115,27 @@ async function loadPost() {
         );
 
         if (response.status === 404) {
-            throw new Error(
-                'This post is not available.'
+            showArticleMessage(
+                "couldn't find that post :/",
+                'not-found'
             );
+
+            return;
         }
 
         if (!response.ok) {
-            throw new Error(
-                'This post could not be loaded.'
-            );
+            throw new Error('post request failed');
         }
 
         const data = await response.json();
 
         renderPost(data.post);
     } catch (error) {
-        articleMessage.textContent = error.message;
-
-        console.error(
-            'Public post loading failed:',
-            error
+        showArticleMessage(
+            "couldn't load this post right now :(",
+            'error'
         );
+
     } finally {
         articleShell.setAttribute('aria-busy', 'false');
     }

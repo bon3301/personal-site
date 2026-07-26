@@ -58,6 +58,32 @@
     color: var(--text-secondary);
 }
 
+.article-message[data-state] {
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    background-color: var(--bg-color);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.85rem;
+}
+
+.article-message[data-state]::before {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.article-message[data-state="not-found"]::before {
+    content: '404';
+}
+
+.article-message[data-state="error"]::before {
+    content: 'error';
+}
+
 .article-content {
     margin-top: 2.5rem;
     font-size: 1.02rem;
