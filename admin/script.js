@@ -582,6 +582,12 @@ loginForm.addEventListener('submit', async (event) => {
             })
         });
 
+        if (response.status === 429) {
+            passwordInput.value = '';
+            passwordInput.blur();
+            return;
+        }
+
         const data = await readResponse(response);
 
         if (

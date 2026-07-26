@@ -74,3 +74,25 @@ class Post(Base):
         DateTime(timezone=True),
         nullable=True
     )
+
+
+class AdminLoginLimit(Base):
+    __tablename__ = "admin_login_limits"
+
+    fingerprint: Mapped[str] = mapped_column(
+        String(64),
+        primary_key=True
+    )
+
+    failed_attempts: Mapped[int] = mapped_column(
+        Integer
+    )
+
+    window_started_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True)
+    )
+
+    locked_until: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True
+    )

@@ -12,6 +12,13 @@ from flask import (
 )
 from werkzeug.security import check_password_hash
 
+from api.login_limit import (
+    clear_login_limit,
+    get_client_fingerprint,
+    is_login_locked,
+    record_failed_login
+)
+
 
 admin_auth = Blueprint(
     "admin_auth",
@@ -122,12 +129,24 @@ def login():
             "error": "A valid password is required"
         }), 400
 
-    if not check_password_hash(password_hash, password):
+    fingerprint = get_client_fingerprint()
+
+    if is_login_locked(fingerprint):
         session.clear()
+        return "", 429
+
+    if not check_password_hash(password_hash, password):
+        locked = record_failed_login(fingerprint)
+        session.clear()
+
+        if locked:
+            return "", 429
 
         return jsonify({
             "error": "Invalid credentials"
         }), 401
+
+    clear_login_limit(fingerprint)
 
     session.clear()
     session["is_admin"] = True
