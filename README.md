@@ -8,18 +8,25 @@ very own personal portfolio built with a rather simple stack.
 
 ### Tooling 
 - Vite 
-- Terser for minification (planned)
 
-### Planned backend
+### Backend
 - Python
 - Flask
 - Spotify WebAPI
 - Hosted on Vercel
+- Neon PostgreSQL
+- SQLAlchemy
+- Alembic migrations
 
-## Plans
- - Live realtime updated widgets (Spotify current listening) connected to a Flask backend/proxy hosted on Vercel
-- Interactive/fun background on the site (spacey)
-- Themes? Light and dark for sure
-- Differnet Sections, a blog (static? or hosted?) and sections for my interests; shows - portfolio showing a personal side too.
-- Served via Vite, with Terser planned.
+## Features
+- Live Spotify listening widget through a Flask API proxy
+- Interactive drifting space background
+- Dark and light themes
+- Separate projects, albums and shows pages
+- iPod-style album browser with tracklists
+- Favorite shows poster collage
+- Custom blog publishing system with a private dashboard
+- Markdown editor, drafts, autosaving and publishing
+- Password authentication, CSRF protection and login rate limiting
+- Deployed through Vercel
 
