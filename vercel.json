@@ -6,6 +6,10 @@
             "destination": "/api/index"
         },
         {
+            "source": "/blog/:slug/",
+            "destination": "/blog/post/index.html"
+        },
+        {
             "source": "/blog/:slug",
             "destination": "/blog/post/index.html"
         }
