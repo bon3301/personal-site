@@ -235,6 +235,7 @@
 
   @media (max-width: 768px) {
       .site-nav {
+          position: absolute;
           top: 1.5rem;
           left: 1.25rem;
           gap: 1.25rem;
@@ -245,6 +246,7 @@
       }
 
       .theme-toggle {
+          position: absolute;
           top: 1rem;
           right: 1rem;
           width: 3rem;
