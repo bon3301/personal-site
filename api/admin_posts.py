@@ -514,3 +514,50 @@ def unpublish_admin_post(post_id):
     finally:
         if database_session is not None:
             database_session.close()
+
+
+@admin_posts.delete("/posts/<int:post_id>")
+@admin_required
+@csrf_required
+def delete_admin_post(post_id):
+    database_session = None
+
+    try:
+        database_session = get_session()
+        post = database_session.get(Post, post_id)
+
+        if post is None:
+            return jsonify({
+                "error": "post not found :/"
+            }), 404
+
+        if post.status == "published":
+            return jsonify({
+                "error": (
+                    "unpublish it before deleting"
+                )
+            }), 409
+
+        database_session.delete(post)
+        database_session.commit()
+
+        return jsonify({
+            "deleted": True,
+            "post_id": post_id
+        })
+
+    except (SQLAlchemyError, RuntimeError):
+        if database_session is not None:
+            database_session.rollback()
+
+        current_app.logger.exception(
+            "Failed to delete an admin post"
+        )
+
+        return jsonify({
+            "error": "couldn't delete the post :/"
+        }), 500
+
+    finally:
+        if database_session is not None:
+            database_session.close()

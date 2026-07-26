@@ -328,6 +328,15 @@
     color: #f87171;
 }
 
+.danger-button {
+    border-color: #f87171;
+    color: #f87171;
+}
+
+.danger-button[hidden] {
+    display: none;
+}
+
 .editor-url-preview {
     width: 100%;
     padding: 0.7rem 0.9rem;

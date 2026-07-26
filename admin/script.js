@@ -39,6 +39,9 @@ const editorUrlOrigin = document.getElementById(
     'editor-url-origin'
 );
 const editorSlug = document.getElementById('editor-slug');
+const deletePostButton = document.getElementById(
+    'delete-post-button'
+);
 
 editorUrlOrigin.textContent =
     `${window.location.origin}/blog/`;
@@ -259,6 +262,7 @@ function setEditorDisabled(disabled) {
     editorContent.disabled = disabled;
     savePostButton.disabled = disabled;
     publishButton.disabled = disabled;
+    deletePostButton.disabled = disabled;
 
     editorSlug.disabled = (
         disabled ||
@@ -423,6 +427,9 @@ function updateEditorStatus(post) {
     editorUrlPreview.dataset.status = post.status;
 
     editorSlug.disabled =
+        post.status === 'published';
+
+    deletePostButton.hidden =
         post.status === 'published';
 }
 
@@ -684,6 +691,82 @@ postEditor.addEventListener('submit', async (event) => {
 
     cancelAutoSave();
     await saveCurrentPost(false);
+});
+
+deletePostButton.addEventListener('click', async () => {
+    if (activePostId === null) {
+        return;
+    }
+
+    if (activePostStatus === 'published') {
+        editorMessage.textContent =
+            'unpublish it before deleting';
+
+        return;
+    }
+
+    const title = editorTitle.value.trim();
+
+    const confirmed = window.confirm(
+        `delete "${title}" forever?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    cancelAutoSave();
+
+    deletePostButton.disabled = true;
+    publishButton.disabled = true;
+    savePostButton.disabled = true;
+
+    editorMessage.textContent = 'deleting...';
+
+    const postId = activePostId;
+
+    try {
+        const response = await fetch(
+            `/api/admin/posts/${postId}`,
+            {
+                method: 'DELETE',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-Token': csrfToken
+                }
+            }
+        );
+
+        if (response.status === 401) {
+            showLogin();
+            return;
+        }
+
+        await readResponse(response);
+
+        activePostId = null;
+        activePostStatus = null;
+        editorIsDirty = false;
+        editorRevision = 0;
+
+        postEditor.hidden = true;
+        dashboardView.hidden = false;
+
+        await loadAdminPosts();
+    } catch (error) {
+        editorMessage.textContent = error.message;
+
+        console.error(
+            'Post deletion failed:',
+            error
+        );
+    } finally {
+        if (activePostId !== null) {
+            deletePostButton.disabled = false;
+            publishButton.disabled = false;
+            savePostButton.disabled = false;
+        }
+    }
 });
 
 publishButton.addEventListener('click', async () => {
