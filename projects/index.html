@@ -7,9 +7,9 @@
 
     <meta
         name="description"
-        content="Personal notes and updates from bon3301">
+        content="Projects made by bon3301">
 
-    <title>blog | bon3301</title>
+    <title>projects | bon3301</title>
 
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
@@ -55,8 +55,14 @@
             </svg>
         </a>
 
-        <a href="/projects/" class="nav-link">projects</a>
-        <a href="/blog/" class="nav-link" aria-current="page">blog</a>
+        <a
+            href="/projects/"
+            class="nav-link"
+            aria-current="page">
+            projects
+        </a>
+
+        <a href="/blog/" class="nav-link">blog</a>
 
         <div class="dropdown">
             <button
@@ -89,28 +95,49 @@
     <canvas id="canvas" aria-hidden="true"></canvas>
 
     <main>
-        <header class="blog-header">
-            <h1>blog</h1>
+        <header class="projects-header">
+            <h1>projects</h1>
 
-            <p class="blog-caption">
-                Personal notes, project updates and whatever else I feel like
-                writing about.
+            <p>
+                Things i've made and spent way too much time on.
             </p>
         </header>
 
-        <section
-            class="post-list"
-            id="post-list"
-            aria-label="Blog posts"
-            aria-live="polite"
-            aria-busy="true">
+        <section class="project-list" aria-label="Project list">
+            <article class="project-row">
+                <div class="project-info">
+                    <h2>personal site</h2>
 
-            <p class="post-message">Loading posts...</p>
+                    <p>
+                        My portfolio, live Spotify widget and unnecessarily
+                        overengineered publishing system.
+                    </p>
+                </div>
+
+                <p class="project-stack">
+                    HTML &middot; CSS &middot; JS &middot; Flask &middot; PostgreSQL
+                </p>
+
+                <div class="project-links">
+                    <a
+                        href="https://github.com/bon3301/personal-site"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        source &nearr;
+                    </a>
+
+                    <a
+                        href="https://bon-personal-portfolio.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        live &nearr;
+                    </a>
+                </div>
+            </article>
         </section>
     </main>
 
     <script type="module" src="../shared/site.js"></script>
-    <script type="module" src="./script.js"></script>
 </body>
 
 </html>
