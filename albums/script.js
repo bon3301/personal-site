@@ -30,46 +30,18 @@ function getDistance(index) {
     return distance;
 }
 
-function renderCovers() {
-    coverStage.replaceChildren();
+const coverElements = [];
 
+function createCovers() {
     albums.forEach((album, index) => {
-        const distance = getDistance(index);
-        const amount = Math.abs(distance);
-
-        if (amount > 2) {
-            return;
-        }
-
         const cover = document.createElement('button');
         cover.className = 'album-cover';
         cover.type = 'button';
+
         cover.setAttribute(
             'aria-label',
             `Select ${album.title}`
         );
-        cover.setAttribute(
-            'aria-pressed',
-            String(index === activeIndex)
-        );
-
-        cover.style.setProperty(
-            '--cover-x',
-            `${distance * 72}%`
-        );
-        cover.style.setProperty(
-            '--cover-turn',
-            `${distance * -34}deg`
-        );
-        cover.style.setProperty(
-            '--cover-scale',
-            Math.max(0.58, 1 - amount * 0.16)
-        );
-        cover.style.setProperty(
-            '--cover-opacity',
-            Math.max(0.35, 1 - amount * 0.28)
-        );
-        cover.style.zIndex = String(10 - amount);
 
         const image = document.createElement('img');
         image.src = album.cover;
@@ -82,7 +54,44 @@ function renderCovers() {
             selectAlbum(index);
         });
 
+        coverElements.push(cover);
         coverStage.append(cover);
+    });
+}
+
+function positionCovers() {
+    coverElements.forEach((cover, index) => {
+        const distance = getDistance(index);
+        const amount = Math.abs(distance);
+
+        cover.hidden = amount > 2;
+
+        cover.setAttribute(
+            'aria-pressed',
+            String(index === activeIndex)
+        );
+
+        cover.style.setProperty(
+            '--cover-x',
+            `${distance * 72}%`
+        );
+
+        cover.style.setProperty(
+            '--cover-turn',
+            `${distance * -34}deg`
+        );
+
+        cover.style.setProperty(
+            '--cover-scale',
+            Math.max(0.58, 1 - amount * 0.16)
+        );
+
+        cover.style.setProperty(
+            '--cover-opacity',
+            Math.max(0.35, 1 - amount * 0.28)
+        );
+
+        cover.style.zIndex = String(10 - amount);
     });
 }
 
@@ -107,7 +116,7 @@ function renderDetails() {
 }
 
 function render() {
-    renderCovers();
+    positionCovers();
     renderDetails();
 }
 
@@ -194,4 +203,5 @@ coverStage.addEventListener(
     { passive: true }
 );
 
+createCovers();
 render();
